@@ -1,0 +1,74 @@
+USE [TestRefData]
+GO
+/****** Object:  StoredProcedure [dbo].[sproc_PopulateEnterpriseCodeMappingDataMain]    Script Date: 04/12/2016 16:58:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[sproc_PopulateEnterpriseCodeMappingDataMain]
+@enterprise_code_mapping_id as nvarchar(255) 
+AS
+BEGIN
+--Declare @enterprise_code_mapping_id Nvarchar(200)
+DECLARE @openbetId  NVARCHAR(2)=1
+DECLARE @sportsdbId NVARCHAR(2)=2
+DECLARE @betradarId  NVARCHAR(2)=7
+DECLARE @brpmId NVARCHAR(2)=8
+DECLARE @imgId NVARCHAR(2)=6
+DECLARE @mappingType NVARCHAR(50)='EVENTTYPE'
+Declare @recordId nvarchar(50)
+ --EventType
+ set @recordId='[Event type id]'
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventType$]',@enterprise_code_mapping_id,@openbetId,@mappingType,'[Openbet Id]','[Openbet name]',@recordId --open bet
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventType$]',@enterprise_code_mapping_id,@sportsdbId,@mappingType,'[SportsDB id]','[SportsDB name]',@recordId
+ set @mappingType ='EVENTSUBTYPE'
+ set @recordId='[Event sub type id]'
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@openbetId,@mappingType,'[Openbet Id]','[Openbet name]',@recordId
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@sportsdbId,@mappingType,'[SportsDB id]','[SportsDB name]',@recordId
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ --betradar inplay 1
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@betradarId,@mappingType,'[Betradar Id1]','[Betradar name1]',@recordId
+  --betradar inplay 2
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@betradarId,@mappingType,'[Betradar Id2]','[Betradar name2]',@recordId
+ 
+ --betradar prematch 1
+  select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@brpmId,@mappingType,'[Betradar Id1]','[Betradar name1]',@recordId
+ --betradar prematch 2
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@brpmId,@mappingType,'[Betradar Id2]','[Betradar name2]',@recordId
+  --IMG 1
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@imgId,@mappingType,'[IMG id1]','[IMG name1]',@recordId
+  --IMG 2
+ select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubType$]',@enterprise_code_mapping_id,@imgId,@mappingType,'[IMG id2]','[IMG name2]',@recordId
+ ----BetRadar Inplay
+ -- set @mappingType ='ROUND'
+ -- set @recordId='[Round id]'
+ -- select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ --   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubTypeRound$]',@enterprise_code_mapping_id,@betradarId,@mappingType,'[BetRadar id]','[BetRadar Name]',@recordId
+ ----BetRadar Prematch
+ -- select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ --   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubTypeRound$]',@enterprise_code_mapping_id,@brpmId,@mappingType,'[BetRadar id]','[BetRadar Name]',@recordId
+ --   ---IMG
+ --    select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ --   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubTypeRound$]',@enterprise_code_mapping_id,@imgId,@mappingType,'[IMG id]','[IMG name]',@recordId
+ --   --sports db
+ --      select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+ --   Exec sproc_PopulateEnterpriseCodeMappingData '[EventSubTypeRound$]',@enterprise_code_mapping_id,@sportsdbId,@mappingType,'[SportsDB id]','[SportsDB name]',@recordId
+ 
+     set @mappingType ='MARKETTYPE ET'    
+    select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+    Exec sproc_PopulateEnterpriseCodeMappingDataForMarketType '[MarketType$]',@enterprise_code_mapping_id,@openbetId,@mappingType,'[Openbet Id]','[Openbet name]'
+     set @mappingType ='MARKETTYPE EST'
+    select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+    Exec sproc_PopulateEnterpriseCodeMappingDataForMarketType '[MarketType$]',@enterprise_code_mapping_id,@openbetId,@mappingType,'[Openbet Id]','[Openbet name]'
+     select @enterprise_code_mapping_id= MAX([enterprise code mapping id])+1 from [EnterpriseCodeMapping$]
+    Exec sproc_PopulateEnterpriseCodeMappingDataForMarketType '[MarketType$]',@enterprise_code_mapping_id,@sportsdbId,@mappingType,'[SportsDB id]','[SportsDB name]'
+END
